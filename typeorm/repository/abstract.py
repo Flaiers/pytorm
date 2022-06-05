@@ -1,17 +1,6 @@
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    Sequence,
-    Type,
-    TypeVar,
-    overload,
-)
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar, overload
 
-from sqlalchemy.ext.declarative import (
-    DeclarativeMeta,
-    declarative_base,
-)
+from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
 Base: DeclarativeMeta = declarative_base()
 Model = TypeVar('Model', bound=Base)
