@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "typeorm"
-version = "0.0.1"
+version = "0.0.2"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
-    "sqlalchemy"
+    "python",
+    "sqlalchemy",
+    "fastapi",
 ]
 
 license = "MIT"
