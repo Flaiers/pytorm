@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Sequence, Type, TypeVar, overload
+from typing import Any, Dict, Sequence, Type, TypeVar, overload
 
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
@@ -6,51 +6,57 @@ Base: DeclarativeMeta = declarative_base()
 Model = TypeVar('Model', bound=Base)
 
 
-class AbstractRepository(Generic[Model]):
+class AbstractRepository(object):
 
     model: Type[Model]
 
-    @overload
-    def create(self, **attrs) -> Model: ...
+    def create(self, **attrs) -> Model:
+        raise NotImplementedError
+
+    def merge(self, instance: Model, **attrs) -> Model:
+        raise NotImplementedError
+
+    def has_pk(self, instance: Model) -> bool:
+        raise NotImplementedError
+
+    def get_pk(self, instance: Model) -> Dict[str, Any] | Any:
+        raise NotImplementedError
+
+    async def count(self, *where, **attrs) -> int:
+        raise NotImplementedError
+
+    async def delete(self, *where, **attrs) -> None:
+        raise NotImplementedError
+
+    async def find(self, *where, **attrs) -> Sequence[Model]:
+        raise NotImplementedError
+
+    async def find_one(self, *where, **attrs) -> Model | None:
+        raise NotImplementedError
+
+    async def find_one_or_fail(self, *where, **attrs) -> Model:
+        raise NotImplementedError
 
     @overload
-    def merge(self, instance: Model, **attrs) -> Model: ...
+    async def remove(self, instance: Model) -> None:
+        raise NotImplementedError
 
     @overload
-    def has_pk(self, instance: Model) -> bool: ...
+    async def remove(self, instances: Sequence[Model]) -> None:
+        raise NotImplementedError
 
     @overload
-    def get_pk(self, instance: Model) -> Dict[str, Any] | Any: ...
+    async def pre_save(self, instance: Model) -> Model:
+        raise NotImplementedError
 
     @overload
-    async def count(self, *where, **attrs) -> int: ...
+    async def pre_save(self, instances: Sequence[Model]) -> Sequence[Model]:
+        raise NotImplementedError
 
     @overload
-    async def delete(self, *where, **attrs) -> None: ...
+    async def save(self, instance: Model) -> Model:
+        raise NotImplementedError
 
     @overload
-    async def find(self, *where, **attrs) -> Sequence[Model]: ...
-
-    @overload
-    async def find_one(self, *where, **attrs) -> Model | None: ...
-
-    @overload
-    async def find_one_or_fail(self, *where, **attrs) -> Model: ...
-
-    @overload
-    async def remove(self, instance: Model) -> None: ...
-
-    @overload
-    async def remove(self, instances: Sequence[Model]) -> None: ...
-
-    @overload
-    async def pre_save(self, instance: Model) -> Model: ...
-
-    @overload
-    async def pre_save(self, instances: Sequence[Model]) -> Sequence[Model]: ...
-
-    @overload
-    async def save(self, instance: Model) -> Model: ...
-
-    @overload
-    async def save(self, instances: Sequence[Model]) -> Sequence[Model]: ...
+    async def save(self, instances: Sequence[Model]) -> Sequence[Model]:
+        raise NotImplementedError

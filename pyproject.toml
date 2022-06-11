@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "typeorm"
-version = "0.0.2"
+version = "0.0.3"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
@@ -28,6 +28,9 @@ fastapi = "^0.78.0"
 
 
 [tool.poetry.dev-dependencies]
+pre-commit = "^2.19.0"
+wemake-python-styleguide = "^0.16.1"
+mypy = "^0.961"
 
 
 [build-system]
