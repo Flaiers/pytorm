@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "typeorm"
-version = "0.0.1"
+version = "0.0.2"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
-    "sqlalchemy"
+    "python",
+    "sqlalchemy",
+    "fastapi",
 ]
 
 license = "MIT"
@@ -21,9 +23,14 @@ documentation = "https://github.com/flaiers/typeorm"
 [tool.poetry.dependencies]
 python = "^3.10"
 SQLAlchemy = "^1.4.37"
+multimethod = "^1.8"
+fastapi = "^0.78.0"
 
 
 [tool.poetry.dev-dependencies]
+pre-commit = "^2.19.0"
+wemake-python-styleguide = "^0.16.1"
+mypy = "^0.961"
 
 
 [build-system]
