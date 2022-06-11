@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-from typeorm import AbstractRepository
+from typeorm.repository import AbstractRepository
 from typeorm.session import get_session
 
 Base: DeclarativeMeta = declarative_base()
@@ -120,7 +120,7 @@ class Repository(AbstractRepository, Generic[Model]):
 
 
 def InjectRepository(  # noqa: N802
-    model: Callable[..., Any], *, use_cache: bool = True,
+    model: Callable[..., Model], *, use_cache: bool = True,
 ) -> Any:
     class_name = '{0.__name__}{1.__name__}'.format(model, Repository)
     class_bases = (Repository,)
