@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "typeorm"
+name = "pytorm"
 version = "0.0.3"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
@@ -15,9 +15,9 @@ authors = [
 ]
 
 readme = "README.md"
-homepage = "https://github.com/flaiers/typeorm"
-repository = "https://github.com/flaiers/typeorm"
-documentation = "https://github.com/flaiers/typeorm"
+homepage = "https://github.com/flaiers/pytorm"
+repository = "https://github.com/flaiers/pytorm"
+documentation = "https://github.com/flaiers/pytorm"
 
 
 [tool.poetry.dependencies]
