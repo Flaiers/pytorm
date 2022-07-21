@@ -1,14 +1,12 @@
-from typing import Any, Callable, Dict, Generic, Sequence, TypeVar
+from typing import Any, Dict, Generic, Sequence, TypeVar
 
 import sqlalchemy as sa
-from fastapi import Depends, params
 from multimethod import multimethod as overload
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
 from pytorm.repository import AbstractRepository
-from pytorm.session import get_session
 
 Base: DeclarativeMeta = declarative_base()
 Model = TypeVar('Model', bound=Base)
@@ -16,9 +14,7 @@ Model = TypeVar('Model', bound=Base)
 
 class Repository(AbstractRepository, Generic[Model]):
 
-    def __init__(
-        self, session: AsyncSession = Depends(get_session),
-    ) -> None:
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
         self.primary_keys = (
             pk
@@ -58,6 +54,11 @@ class Repository(AbstractRepository, Generic[Model]):
         statement = sa.select(sa.func.count(
         )).select_from(self.model).where(*where).filter_by(**attrs)
         return await self.session.scalar(statement)
+
+    async def update(self, *where, values: Dict[str, Any], **attrs) -> None:
+        statement = sa.update(self.model).where(*where).filter_by(**attrs).values(**values)
+        await self.session.execute(statement)
+        await self.session.commit()
 
     async def delete(self, *where, **attrs) -> None:
         statement = sa.delete(self.model).where(*where).filter_by(**attrs)
@@ -119,11 +120,9 @@ class Repository(AbstractRepository, Generic[Model]):
         return instances
 
 
-def InjectRepository(  # noqa: N802
-    model: Callable[..., Model], *, use_cache: bool = True,
-) -> Any:
+def InjectRepository(model: Model, session: AsyncSession) -> Repository[Model]:
     class_name = '{0.__name__}{1.__name__}'.format(model, Repository)
     class_bases = (Repository,)
     class_namespace = {'model': model}
     dependency = type(class_name, class_bases, class_namespace)
-    return params.Depends(dependency=dependency, use_cache=use_cache)
+    return dependency(session=session)
