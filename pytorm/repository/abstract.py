@@ -25,6 +25,9 @@ class AbstractRepository(object):
     async def count(self, *where, **attrs) -> int:
         raise NotImplementedError
 
+    async def update(self, *where, values: Dict[str, Any], **attrs) -> None:
+        raise NotImplementedError
+
     async def delete(self, *where, **attrs) -> None:
         raise NotImplementedError
 
