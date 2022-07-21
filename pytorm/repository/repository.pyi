@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, Generic, Sequence, TypeVar, overload
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from typeorm.repository import AbstractRepository
+from pytorm.repository import AbstractRepository
 
 T = TypeVar('T')
 

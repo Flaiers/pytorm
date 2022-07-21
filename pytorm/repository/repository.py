@@ -7,8 +7,8 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
-from typeorm.repository import AbstractRepository
-from typeorm.session import get_session
+from pytorm.repository import AbstractRepository
+from pytorm.session import get_session
 
 Base: DeclarativeMeta = declarative_base()
 Model = TypeVar('Model', bound=Base)
