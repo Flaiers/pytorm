@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytorm"
-version = "0.0.3"
+version = "0.0.4"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
