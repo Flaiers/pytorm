@@ -124,5 +124,5 @@ def InjectRepository(model: Model, session: AsyncSession) -> Repository[Model]:
     class_name = '{0.__name__}{1.__name__}'.format(model, Repository)
     class_bases = (Repository,)
     class_namespace = {'model': model}
-    dependency = type(class_name, class_bases, class_namespace)
-    return dependency(session=session)
+    repository = type(class_name, class_bases, class_namespace)
+    return repository(session=session)
