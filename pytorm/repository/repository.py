@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Sequence, TypeVar
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar
 
 import sqlalchemy as sa
 from multimethod import multimethod as overload
@@ -120,7 +120,7 @@ class Repository(AbstractRepository, Generic[Model]):
         return instances
 
 
-def InjectRepository(model: Model, session: AsyncSession) -> Repository[Model]:
+def InjectRepository(model: Type[Model], session: AsyncSession) -> Repository[Model]:
     class_name = '{0.__name__}{1.__name__}'.format(model, Repository)
     class_bases = (Repository,)
     class_namespace = {'model': model}
