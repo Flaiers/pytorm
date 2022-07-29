@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "pytorm"
-version = "0.0.3"
+version = "0.0.6"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
     "sqlalchemy",
+    "orm",
     "fastapi",
 ]
 
@@ -24,7 +25,6 @@ documentation = "https://github.com/flaiers/pytorm"
 python = "^3.10"
 SQLAlchemy = "^1.4.37"
 multimethod = "^1.8"
-fastapi = "^0.78.0"
 
 
 [tool.poetry.dev-dependencies]
