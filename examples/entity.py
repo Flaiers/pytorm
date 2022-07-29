@@ -1,11 +1,8 @@
 import sqlalchemy as sa
 from sqlalchemy import MetaData
 from sqlalchemy.dialects import postgresql as psql
-from sqlalchemy.ext.declarative import (
-    as_declarative,
-    declarative_mixin,
-    declared_attr,
-)
+from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.orm import declarative_mixin
 
 
 @declarative_mixin
