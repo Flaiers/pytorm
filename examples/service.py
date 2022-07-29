@@ -24,6 +24,7 @@ class ApplicationService(object):
 
     async def find(self, dto: ApplicationFilter) -> Sequence[Application]:
         return await self.repository.find(
+            Application.deleted_at.is_(None),
             Application.phone.contains(dto.phone),
             Application.email.contains(dto.email),
         )
