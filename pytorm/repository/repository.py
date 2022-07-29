@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Sequence, TypeVar
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar
 
 import sqlalchemy as sa
 from multimethod import multimethod as overload
