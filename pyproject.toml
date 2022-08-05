@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytorm"
-version = "0.0.6"
+version = "0.1.0"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
@@ -28,9 +28,11 @@ multimethod = "^1.8"
 
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.19.0"
+pre-commit = "^2.20.0"
 wemake-python-styleguide = "^0.16.1"
-mypy = "^0.961"
+mypy = "^0.971"
+pydantic = "^1.9.1"
+fastapi = "^0.79.0"
 
 
 [build-system]

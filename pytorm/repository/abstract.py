@@ -1,65 +1,138 @@
-from typing import Any, Dict, Sequence, Type, TypeVar, overload
+from abc import ABC, abstractmethod
+from typing import Any, ClassVar, Dict, List, Sequence, Type, TypeVar, overload
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+from sqlalchemy.orm import Query
 
 Base: DeclarativeMeta = declarative_base()
 Model = TypeVar('Model', bound=Base)
 
 
-class AbstractRepository(object):
+class AbstractRepository(ABC):
 
-    model: Type[Model]
+    session: ClassVar[AsyncSession]
+    model_cls: ClassVar[Type[Model]]
+    query_cls: ClassVar[Type[Query]]
 
-    def create(self, **attrs) -> Model:
+    @classmethod
+    @abstractmethod
+    def query(cls, *entities) -> Query:
         raise NotImplementedError
 
-    def merge(self, instance: Model, **attrs) -> Model:
+    @classmethod
+    @abstractmethod
+    def create(cls, **attrs) -> Model:
         raise NotImplementedError
 
-    def has_pk(self, instance: Model) -> bool:
+    @classmethod
+    @abstractmethod
+    def merge(cls, instance: Model, **attrs) -> Model:
         raise NotImplementedError
 
-    def get_pk(self, instance: Model) -> Dict[str, Any] | Any:
+    @classmethod
+    @abstractmethod
+    def has_pk(cls, instance: Model) -> bool:
         raise NotImplementedError
 
-    async def count(self, *where, **attrs) -> int:
+    @classmethod
+    @abstractmethod
+    def get_pk(cls, instance: Model) -> Dict[str, Any] | Any:
         raise NotImplementedError
 
-    async def update(self, *where, values: Dict[str, Any], **attrs) -> None:
+    @classmethod
+    @abstractmethod
+    async def count(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> int:
         raise NotImplementedError
 
-    async def delete(self, *where, **attrs) -> None:
+    @classmethod
+    @abstractmethod
+    async def update(
+        cls,
+        *where,
+        values: Dict[str, Any],
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         raise NotImplementedError
 
-    async def find(self, *where, **attrs) -> Sequence[Model]:
+    @classmethod
+    @abstractmethod
+    async def delete(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         raise NotImplementedError
 
-    async def find_one(self, *where, **attrs) -> Model | None:
+    @classmethod
+    @abstractmethod
+    async def find(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> List[Model]:
         raise NotImplementedError
 
-    async def find_one_or_fail(self, *where, **attrs) -> Model:
+    @classmethod
+    @abstractmethod
+    async def find_one(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> Model | None:
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    async def find_one_or_fail(cls, *where, **attrs) -> Model:
         raise NotImplementedError
 
     @overload
-    async def remove(self, instance: Model) -> None:
+    @classmethod
+    @abstractmethod
+    async def remove(cls, instance: Model) -> None:
         raise NotImplementedError
 
     @overload
-    async def remove(self, instances: Sequence[Model]) -> None:
+    @classmethod
+    @abstractmethod
+    async def remove(cls, instances: Sequence[Model]) -> None:
         raise NotImplementedError
 
     @overload
-    async def pre_save(self, instance: Model) -> Model:
+    @classmethod
+    @abstractmethod
+    async def pre_save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
     @overload
-    async def pre_save(self, instances: Sequence[Model]) -> Sequence[Model]:
+    @classmethod
+    @abstractmethod
+    async def pre_save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError
 
     @overload
-    async def save(self, instance: Model) -> Model:
+    @classmethod
+    @abstractmethod
+    async def save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
     @overload
-    async def save(self, instances: Sequence[Model]) -> Sequence[Model]:
+    @classmethod
+    @abstractmethod
+    async def save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError
