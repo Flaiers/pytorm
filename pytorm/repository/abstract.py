@@ -2,11 +2,9 @@ from abc import ABC, abstractmethod
 from typing import Any, ClassVar, Dict, List, Sequence, Type, TypeVar, overload
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import Query
 
-Base: DeclarativeMeta = declarative_base()
-Model = TypeVar('Model', bound=Base)
+Model = TypeVar('Model')
 
 
 class AbstractRepository(ABC):
@@ -101,38 +99,38 @@ class AbstractRepository(ABC):
     async def find_one_or_fail(cls, *where, **attrs) -> Model:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def remove(cls, instance: Model) -> None:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def remove(cls, instances: Sequence[Model]) -> None:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def pre_save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def pre_save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
-    @overload
     @classmethod
     @abstractmethod
+    @overload
     async def save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError
