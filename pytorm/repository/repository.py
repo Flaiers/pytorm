@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Sequence, Type, TypeVar
+from typing import Any, Dict, Generic, List, Sequence, Type, TypeVar
 
 import sqlalchemy as sa
 from multimethod import multimethod as overload
@@ -53,32 +53,75 @@ class Repository(AbstractRepository, Generic[Model]):
         return next(iter(pks.values()))
 
     @classmethod
-    async def count(cls, *where, **attrs) -> int:
+    async def count(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> int:
         statement = sa.select(sa.func.count(
         )).select_from(cls.model_cls).where(*where).filter_by(**attrs)
-        return await cls.session.scalar(statement)
+        return await cls.session.scalar(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
 
     @classmethod
-    async def update(cls, *where, values: Dict[str, Any], **attrs) -> None:
-        statement = sa.update(cls.model_cls).where(*where).filter_by(**attrs).values(**values)
-        await cls.session.execute(statement)
+    async def update(
+        cls,
+        *where,
+        values: Dict[str, Any],
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
+        statement = sa.update(
+            cls.model_cls,
+        ).where(*where).filter_by(**attrs).values(**values)
+        await cls.session.execute(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
         await cls.session.commit()
 
     @classmethod
-    async def delete(cls, *where, **attrs) -> None:
+    async def delete(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         statement = sa.delete(cls.model_cls).where(*where).filter_by(**attrs)
-        await cls.session.execute(statement)
+        await cls.session.execute(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
         await cls.session.commit()
 
     @classmethod
-    async def find(cls, *where, **attrs) -> Sequence[Model]:
+    async def find(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> List[Model]:
         statement = sa.select(cls.model_cls).where(*where).filter_by(**attrs)
-        return (await cls.session.scalars(statement)).unique().all()
+        return (await cls.session.scalars(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )).unique().all()
 
     @classmethod
-    async def find_one(cls, *where, **attrs) -> Model | None:
+    async def find_one(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> Model | None:
         statement = sa.select(cls.model_cls).where(*where).filter_by(**attrs)
-        return await cls.session.scalar(statement)
+        return await cls.session.scalar(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
 
     @classmethod
     async def find_one_or_fail(cls, *where, **attrs) -> Model:
@@ -104,25 +147,25 @@ class Repository(AbstractRepository, Generic[Model]):
 
     @overload
     @classmethod
-    async def pre_save(cls, instance: Model) -> Model:
+    async def pre_save(cls, instance: Model, **kwargs) -> Model:
         if cls.has_pk(instance):
-            return await cls.session.merge(instance)
+            return await cls.session.merge(instance, **kwargs)
 
-        cls.session.add(instance)
-        await cls.session.flush()
+        cls.session.add(instance, **kwargs)
+        await cls.session.flush([instance])
         return instance
 
     @overload
     @classmethod
     async def pre_save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         cls.session.add_all(instances)
-        await cls.session.flush()
+        await cls.session.flush(instances)
         return instances
 
     @overload
     @classmethod
-    async def save(cls, instance: Model) -> Model:
-        instance = await cls.pre_save(instance)
+    async def save(cls, instance: Model, **kwargs) -> Model:
+        instance = await cls.pre_save(instance, **kwargs)
         await cls.session.commit()
         return instance
 
@@ -135,9 +178,15 @@ class Repository(AbstractRepository, Generic[Model]):
 
 
 def InjectRepository(
-    model_cls: Type[Model], session: AsyncSession, query_cls: Type[Query] = Query,
+    model_cls: Type[Model],
+    session: AsyncSession,
+    query_cls: Type[Query] = Query,
 ) -> Type[Repository[Model]]:
     class_name = '{0.__name__}{1.__name__}'.format(model_cls, Repository)
     class_bases = (Repository,)
-    class_namespace = {'session': session, 'model_cls': model_cls, 'query_cls': query_cls}
+    class_namespace = {
+        'session': session,
+        'model_cls': model_cls,
+        'query_cls': query_cls,
+    }
     return type(class_name, class_bases, class_namespace)
