@@ -4,13 +4,11 @@ import sqlalchemy as sa
 from multimethod import multimethod as overload
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import Query
 
 from pytorm.repository import AbstractRepository
 
-Base: DeclarativeMeta = declarative_base()
-Model = TypeVar('Model', bound=Base)
+Model = TypeVar('Model')
 
 
 class Repository(AbstractRepository, Generic[Model]):
@@ -131,22 +129,22 @@ class Repository(AbstractRepository, Generic[Model]):
 
         return instance
 
-    @overload
     @classmethod
+    @overload
     async def remove(cls, instance: Model) -> None:
         await cls.session.delete(instance)
         await cls.session.commit()
 
-    @overload
     @classmethod
+    @overload
     async def remove(cls, instances: Sequence[Model]) -> None:
         for instance in instances:
             await cls.session.delete(instance)
 
         await cls.session.commit()
 
-    @overload
     @classmethod
+    @overload
     async def pre_save(cls, instance: Model, **kwargs) -> Model:
         if cls.has_pk(instance):
             return await cls.session.merge(instance, **kwargs)
@@ -155,22 +153,22 @@ class Repository(AbstractRepository, Generic[Model]):
         await cls.session.flush([instance])
         return instance
 
-    @overload
     @classmethod
+    @overload
     async def pre_save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         cls.session.add_all(instances)
         await cls.session.flush(instances)
         return instances
 
-    @overload
     @classmethod
+    @overload
     async def save(cls, instance: Model, **kwargs) -> Model:
         instance = await cls.pre_save(instance, **kwargs)
         await cls.session.commit()
         return instance
 
-    @overload
     @classmethod
+    @overload
     async def save(cls, instances: Sequence[Model]) -> Sequence[Model]:
         instances = await cls.pre_save(instances)
         await cls.session.commit()
