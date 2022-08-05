@@ -53,34 +53,75 @@ class Repository(AbstractRepository, Generic[Model]):
         return next(iter(pks.values()))
 
     @classmethod
-    async def count(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> int:
+    async def count(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> int:
         statement = sa.select(sa.func.count(
         )).select_from(cls.model_cls).where(*where).filter_by(**attrs)
-        return await cls.session.scalar(statement, params=params, bind_arguments=bind_arguments)
+        return await cls.session.scalar(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
 
     @classmethod
     async def update(
-        cls, *where, values: Dict[str, Any], params: Any = None, bind_arguments: Any = None, **attrs,
+        cls,
+        *where,
+        values: Dict[str, Any],
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
     ) -> None:
-        statement = sa.update(cls.model_cls).where(*where).filter_by(**attrs).values(**values)
-        await cls.session.execute(statement, params=params, bind_arguments=bind_arguments)
+        statement = sa.update(
+            cls.model_cls,
+        ).where(*where).filter_by(**attrs).values(**values)
+        await cls.session.execute(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
         await cls.session.commit()
 
     @classmethod
-    async def delete(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> None:
+    async def delete(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         statement = sa.delete(cls.model_cls).where(*where).filter_by(**attrs)
-        await cls.session.execute(statement, params=params, bind_arguments=bind_arguments)
+        await cls.session.execute(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
         await cls.session.commit()
 
     @classmethod
-    async def find(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> List[Model]:
+    async def find(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> List[Model]:
         statement = sa.select(cls.model_cls).where(*where).filter_by(**attrs)
-        return (await cls.session.scalars(statement, params=params, bind_arguments=bind_arguments)).unique().all()
+        return (await cls.session.scalars(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )).unique().all()
 
     @classmethod
-    async def find_one(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> Model | None:
+    async def find_one(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> Model | None:
         statement = sa.select(cls.model_cls).where(*where).filter_by(**attrs)
-        return await cls.session.scalar(statement, params=params, bind_arguments=bind_arguments)
+        return await cls.session.scalar(
+            statement=statement, params=params, bind_arguments=bind_arguments,
+        )
 
     @classmethod
     async def find_one_or_fail(cls, *where, **attrs) -> Model:
@@ -137,9 +178,15 @@ class Repository(AbstractRepository, Generic[Model]):
 
 
 def InjectRepository(
-    model_cls: Type[Model], session: AsyncSession, query_cls: Type[Query] = Query,
+    model_cls: Type[Model],
+    session: AsyncSession,
+    query_cls: Type[Query] = Query,
 ) -> Type[Repository[Model]]:
     class_name = '{0.__name__}{1.__name__}'.format(model_cls, Repository)
     class_bases = (Repository,)
-    class_namespace = {'session': session, 'model_cls': model_cls, 'query_cls': query_cls}
+    class_namespace = {
+        'session': session,
+        'model_cls': model_cls,
+        'query_cls': query_cls,
+    }
     return type(class_name, class_bases, class_namespace)

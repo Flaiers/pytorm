@@ -42,27 +42,58 @@ class AbstractRepository(ABC):
 
     @classmethod
     @abstractmethod
-    async def count(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> int:
+    async def count(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> int:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def update(cls, *where, values: Dict[str, Any], params: Any = None, bind_arguments: Any = None, **attrs) -> None:
+    async def update(
+        cls,
+        *where,
+        values: Dict[str, Any],
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def delete(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> None:
+    async def delete(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> None:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def find(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> List[Model]:
+    async def find(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> List[Model]:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def find_one(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> Model | None:
+    async def find_one(
+        cls,
+        *where,
+        params: Any = None,
+        bind_arguments: Any = None,
+        **attrs,
+    ) -> Model | None:
         raise NotImplementedError
 
     @classmethod
