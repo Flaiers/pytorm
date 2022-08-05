@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, Sequence, Type, TypeVar, overload
+from typing import Any, ClassVar, Dict, List, Sequence, Type, TypeVar, overload
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
@@ -42,27 +42,27 @@ class AbstractRepository(ABC):
 
     @classmethod
     @abstractmethod
-    async def count(cls, *where, **attrs) -> int:
+    async def count(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> int:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def update(cls, *where, values: Dict[str, Any], **attrs) -> None:
+    async def update(cls, *where, values: Dict[str, Any], params: Any = None, bind_arguments: Any = None, **attrs) -> None:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def delete(cls, *where, **attrs) -> None:
+    async def delete(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> None:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def find(cls, *where, **attrs) -> Sequence[Model]:
+    async def find(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> List[Model]:
         raise NotImplementedError
 
     @classmethod
     @abstractmethod
-    async def find_one(cls, *where, **attrs) -> Model | None:
+    async def find_one(cls, *where, params: Any = None, bind_arguments: Any = None, **attrs) -> Model | None:
         raise NotImplementedError
 
     @classmethod
@@ -85,7 +85,7 @@ class AbstractRepository(ABC):
     @overload
     @classmethod
     @abstractmethod
-    async def pre_save(cls, instance: Model) -> Model:
+    async def pre_save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
     @overload
@@ -97,7 +97,7 @@ class AbstractRepository(ABC):
     @overload
     @classmethod
     @abstractmethod
-    async def save(cls, instance: Model) -> Model:
+    async def save(cls, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
     @overload
