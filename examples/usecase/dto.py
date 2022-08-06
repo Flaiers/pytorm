@@ -7,9 +7,9 @@ from pydantic import BaseModel, EmailStr, Field
 
 class ApplicationCreate(BaseModel):
 
-    phone: str = Field(..., regex=r'^(\+)[1-9][0-9\-().]{9,15}$')
-    email: EmailStr
-    text: str
+    phone: str = Field('+78005553535', regex=r'^(\+)[1-9][0-9\-().]{9,15}$')
+    email: EmailStr = 'user@example.com'
+    text: str = 'Your service is excellent!'
 
 
 class ApplicationRead(BaseModel):
@@ -31,5 +31,5 @@ class ApplicationRead(BaseModel):
 @dataclass
 class ApplicationFilter(object):
 
-    phone: str = ''
-    email: str = ''
+    phone: str = '+78005553535'
+    email: str = 'user@example.com'

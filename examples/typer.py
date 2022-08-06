@@ -1,5 +1,6 @@
 import asyncio
 from functools import wraps
+from typing import Any, Callable
 from uuid import UUID
 
 import typer
@@ -15,10 +16,10 @@ from examples.usecase.dto import (
 
 class Typer(typer.Typer):
 
-    def async_command(self, *args, **kwargs):
-        def decorator(async_func):
+    def async_command(self, *args, **kwargs) -> Callable[..., Any]:
+        def decorator(async_func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(async_func)
-            def sync_func(*_args, **_kwargs):  # noqa: WPS430
+            def sync_func(*_args, **_kwargs) -> Any:  # noqa: WPS430
                 return asyncio.run(async_func(*_args, **_kwargs))
 
             self.command(*args, **kwargs)(sync_func)

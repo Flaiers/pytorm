@@ -40,10 +40,10 @@ class Repository(AbstractRepository, Generic[Model]):
             if (attr := getattr(instance, pk.name)) is not None
         }
 
-        if len(pks) > 1:
+        if len(pks) == 1:
+            return next(iter(pks.values()))
+        elif len(pks) > 1:
             return pks
-
-        return next(iter(pks.values()))
 
     async def count(
         self,

@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime
 from typing import Sequence
 
+import sqlalchemy as sa
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -36,5 +36,5 @@ class ApplicationService(object):
 
     async def delete(self, application_id: uuid.UUID) -> Application:
         application = await self.find_one_or_fail(application_id)
-        self.repository.merge(application, deleted_at=datetime.now())
+        self.repository.merge(application, deleted_at=sa.func.now())
         return await self.repository.save(application)
