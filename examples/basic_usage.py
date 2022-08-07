@@ -47,6 +47,7 @@ async def delete_application(
 async def main() -> None:
     async with context_session() as session:
         application_service = ApplicationService(session)
+        await read_applications(application_service)
         application = await create_application(application_service)
         await read_application(application_service, application.id)
         await delete_application(application_service, application.id)

@@ -34,7 +34,7 @@ mypy = "^0.971"
 pydantic = {extras = ["email"], version = "^1.9.1"}
 fastapi = "^0.79.0"
 asyncpg = "^0.26.0"
-typer = "^0.6.1"
+typer = {extras = ["all"], version = "^0.6.1"}
 
 
 [build-system]

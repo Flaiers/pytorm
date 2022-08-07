@@ -32,11 +32,8 @@ app = Typer()
 
 
 @app.async_command()
-async def read_applications() -> None:
-    dto = ApplicationFilter(
-        phone='+78005553535',
-        email='user@example.com',
-    )
+async def read_applications(phone: str = '', email: str = '') -> None:
+    dto = ApplicationFilter(phone=phone, email=email)
     async with context_session() as session:
         application_service = ApplicationService(session)
         applications = await application_service.find(dto)
@@ -55,12 +52,8 @@ async def read_application(application_id: UUID) -> None:
 
 
 @app.async_command()
-async def create_application() -> None:
-    dto = ApplicationCreate(
-        phone='+78005553535',
-        email='user@example.com',
-        text='Your service is excellent!',
-    )
+async def create_application(phone: str, email: str, text: str) -> None:
+    dto = ApplicationCreate(phone=phone, email=email, text=text)
     async with context_session() as session:
         application_service = ApplicationService(session)
         application = await application_service.create(dto)
