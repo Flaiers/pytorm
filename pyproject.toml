@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "pytorm"
-version = "0.1.0"
+version = "0.1.1"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
     "sqlalchemy",
     "orm",
     "fastapi",
+    "typer",
 ]
 
 license = "MIT"
@@ -23,7 +24,7 @@ documentation = "https://github.com/flaiers/pytorm"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-SQLAlchemy = "^1.4.37"
+SQLAlchemy = "^1.4.39"
 multimethod = "^1.8"
 
 
@@ -31,8 +32,10 @@ multimethod = "^1.8"
 pre-commit = "^2.20.0"
 wemake-python-styleguide = "^0.16.1"
 mypy = "^0.971"
-pydantic = "^1.9.1"
+pydantic = {extras = ["email"], version = "^1.9.1"}
 fastapi = "^0.79.0"
+asyncpg = "^0.26.0"
+typer = {extras = ["all"], version = "^0.6.1"}
 
 
 [build-system]
