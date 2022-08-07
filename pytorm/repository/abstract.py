@@ -1,49 +1,42 @@
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Sequence, Type, TypeVar, overload
+from typing import Any, Dict, List, Sequence, Type, TypeVar
 
+from multimethod import multimethod as overload
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import Query
 
-Base: DeclarativeMeta = declarative_base()
-Model = TypeVar('Model', bound=Base)
+Model = TypeVar('Model')
 
 
 class AbstractRepository(ABC):
 
-    session: ClassVar[AsyncSession]
-    model_cls: ClassVar[Type[Model]]
-    query_cls: ClassVar[Type[Query]]
+    session: AsyncSession
+    model_cls: Type[Model]
+    query_cls: Type[Query]
 
-    @classmethod
     @abstractmethod
-    def query(cls, *entities) -> Query:
+    def query(self, *entities) -> Query:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    def create(cls, **attrs) -> Model:
+    def create(self, **attrs) -> Model:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    def merge(cls, instance: Model, **attrs) -> Model:
+    def merge(self, instance: Model, **attrs) -> Model:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    def has_pk(cls, instance: Model) -> bool:
+    def has_pk(self, instance: Model) -> bool:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    def get_pk(cls, instance: Model) -> Dict[str, Any] | Any:
+    def get_pk(self, instance: Model) -> Dict[str, Any] | Any:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
     async def count(
-        cls,
+        self,
         *where,
         params: Any = None,
         bind_arguments: Any = None,
@@ -51,10 +44,9 @@ class AbstractRepository(ABC):
     ) -> int:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
     async def update(
-        cls,
+        self,
         *where,
         values: Dict[str, Any],
         params: Any = None,
@@ -63,10 +55,9 @@ class AbstractRepository(ABC):
     ) -> None:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
     async def delete(
-        cls,
+        self,
         *where,
         params: Any = None,
         bind_arguments: Any = None,
@@ -74,10 +65,9 @@ class AbstractRepository(ABC):
     ) -> None:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
     async def find(
-        cls,
+        self,
         *where,
         params: Any = None,
         bind_arguments: Any = None,
@@ -85,10 +75,9 @@ class AbstractRepository(ABC):
     ) -> List[Model]:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
     async def find_one(
-        cls,
+        self,
         *where,
         params: Any = None,
         bind_arguments: Any = None,
@@ -96,43 +85,36 @@ class AbstractRepository(ABC):
     ) -> Model | None:
         raise NotImplementedError
 
-    @classmethod
     @abstractmethod
-    async def find_one_or_fail(cls, *where, **attrs) -> Model:
+    async def find_one_or_fail(self, *where, **attrs) -> Model:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def remove(cls, instance: Model) -> None:
+    @overload
+    async def remove(self, instance: Model) -> None:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def remove(cls, instances: Sequence[Model]) -> None:
+    @overload
+    async def remove(self, instances: Sequence[Model]) -> None:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def pre_save(cls, instance: Model, **kwargs) -> Model:
+    @overload
+    async def pre_save(self, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def pre_save(cls, instances: Sequence[Model]) -> Sequence[Model]:
+    @overload
+    async def pre_save(self, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def save(cls, instance: Model, **kwargs) -> Model:
+    @overload
+    async def save(self, instance: Model, **kwargs) -> Model:
         raise NotImplementedError
 
-    @overload
-    @classmethod
     @abstractmethod
-    async def save(cls, instances: Sequence[Model]) -> Sequence[Model]:
+    @overload
+    async def save(self, instances: Sequence[Model]) -> Sequence[Model]:
         raise NotImplementedError

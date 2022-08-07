@@ -1,13 +1,13 @@
 import uuid
-from datetime import datetime
 from typing import Sequence
 
+import sqlalchemy as sa
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from examples.dto import ApplicationCreate, ApplicationFilter
-from examples.entity import Application
-from examples.mocks import get_session
+from examples.usecase.dto import ApplicationCreate, ApplicationFilter
+from examples.usecase.entity import Application
+from examples.usecase.mocks import get_session
 from pytorm.repository import InjectRepository
 
 
@@ -30,9 +30,11 @@ class ApplicationService(object):
         )
 
     async def find_one_or_fail(self, application_id: uuid.UUID) -> Application:
-        return await self.repository.find_one_or_fail(id=application_id)
+        return await self.repository.find_one_or_fail(
+            Application.deleted_at.is_(None), id=application_id,
+        )
 
     async def delete(self, application_id: uuid.UUID) -> Application:
         application = await self.find_one_or_fail(application_id)
-        self.repository.merge(application, deleted_at=datetime.now())
+        self.repository.merge(application, deleted_at=sa.func.now())
         return await self.repository.save(application)
