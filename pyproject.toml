@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "pytorm"
-version = "0.0.7"
+version = "0.1.1"
 description = "Implementation of repository pattern over SQLAlchemy"
 keywords = [
     "python",
     "sqlalchemy",
     "orm",
     "fastapi",
+    "typer",
 ]
 
 license = "MIT"
